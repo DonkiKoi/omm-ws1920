@@ -26,29 +26,29 @@ export interface CustomizedMeme {
 }
 
 const OmmMemeMUC: React.FC = () => {
-  const [selectState, setSelectState] = React.useState<Meme>()
+  const [selectState, setSelectState] = React.useState<Meme>();
   const [memeState, setMemeState] = React.useState<Meme[]>([
       {
         name: 'doge',
         link: `${MEME_API_BASE_URL}/memes/doge`,
       },
-  ])
+  ]);
   const [captionState, setCaptionState] = React.useState<Caption>({
     topText: '', topX: 0, topY: 0,
     bottomText: '', bottomX: 0, bottomY: 0,
-  })
+  });
   const getMemes = () => {
     fetch(`${MEME_API_BASE_URL}/memes`)
     .then(res => res.json())
     .then((memes: Meme[]) => {
       setMemeState(memes.map(meme => {
-        meme.link = `${MEME_API_BASE_URL}${meme.link}`
+        meme.link = `${MEME_API_BASE_URL}${meme.link}`;
         return meme
       }))
     })
-  }
+  };
   const memeURL = () => {
-    var meme: Meme = selectState!
+    var meme: Meme = selectState!;
     if (!meme) {
       return null
     }
@@ -60,21 +60,40 @@ const OmmMemeMUC: React.FC = () => {
     url.searchParams.append('x2', captionState.bottomX.toString());
     url.searchParams.append('y2', captionState.bottomY.toString());
     return url
-  }
+  };
   const captionChanged = (e: any) => {
     setCaptionState({
       ...captionState,
       [e.target.name]: e.target.value,
     })
-  }
+  };
+
+  const addHistory = (url: any) => {
+    console.log("Add to History");
+
+    if (selectState) {
+      const newMeme: CustomizedMeme = {
+        baseMeme: selectState,
+        caption: captionState,
+        link: url
+      };
+
+      if (savedMemes === undefined) {
+        setSavedMemes([]);
+      } else {
+        setSavedMemes(savedMemes.concat(newMeme))
+      }
+    }
+
+  };
 
   // TODO: this should store all saved memes
-  const [savedMemes, setSavedMemes] = React.useState<CustomizedMeme[]>()
+  const [savedMemes, setSavedMemes] = React.useState<CustomizedMeme[]>();
 
-  React.useEffect(() => {getMemes()})
+  React.useEffect(() => {getMemes()});
 
-  let results = (<h3>No Meme Selected</h3>)
-  let url = memeURL()
+  let results = (<h3>No Meme Selected</h3>);
+  let url = memeURL();
   if (url) {
     results = (<img src={url.toString()} alt="selected"/>)
   }
@@ -102,7 +121,7 @@ const OmmMemeMUC: React.FC = () => {
         <input name="bottomY" value={captionState.bottomY} onChange={captionChanged} type="number"/>
       </div>
       {/* TODO: If one clicks this button, the current meme should be saved to the history. Implement the event handling for this button */}
-      <input type="button" value="Save to favorites" className="save-fav"></input>
+      <input type="button" value="Save to favorites" onClick={() => addHistory(url)} className="save-fav"></input>
     </div>
     {/* TODO: use the MemeMUCHistory component here */}
   </div>);
