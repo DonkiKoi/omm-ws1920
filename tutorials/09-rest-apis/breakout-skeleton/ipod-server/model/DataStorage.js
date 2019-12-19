@@ -11,7 +11,7 @@ class DataStorage {
                 1440817260,1350457768,1211829300,1132801552,487215156,1440489651
             ]
         }
-    }
+    };
     songs = {
         1440817260: {
             artist: "John Lennon",
@@ -38,7 +38,7 @@ class DataStorage {
             title: "Lodi"
         }
 
-    }
+    };
 
     // returns ids of all playlists
     getAllPlaylists(){
@@ -47,7 +47,7 @@ class DataStorage {
 
     // returns playlist metadata (no songs)
     getPlaylistById(id){
-        let playlist = this.playlists[id]
+        let playlist = this.playlists[id];
         return {
             id: playlist.id,
             name: playlist.name
@@ -57,13 +57,13 @@ class DataStorage {
 
     // return song ids
     getSongsOfPlaylist(id){
-        let playlist = this.playlists[id]
+        let playlist = this.playlists[id];
         return playlist.songs
     }
 
     // return song metadata
     getSongDetail(id){
-       let song = this.songs[id]
+       let song = this.songs[id];
         return {
             id: id,
             artist: song.artist,
@@ -75,14 +75,14 @@ class DataStorage {
     // returns true if something was created
     addSongToPlaylist(playlistId, trackId, replace){
         if (replace || !(trackId in this.playlists[playlistId].songs)){
-            this.playlists[playlistId].songs.push(trackId)
+            this.playlists[playlistId].songs.push(trackId);
 
             fetch(`https://itunes.apple.com/lookup?id=${trackId}`).then(json => json.json().then(res => {
                 this.songs[trackId] = {
                     artist: res.results[0].artistName,
                     title: res.results[0].trackName
                 }
-            }))
+            }));
 
             return true
         }
@@ -90,7 +90,7 @@ class DataStorage {
     }
 
     deleteSongFromPlaylist(playlistId, trackId){
-        let i = this.playlists[playlistId].songs.indexOf(parseInt(trackId))
+        let i = this.playlists[playlistId].songs.indexOf(parseInt(trackId));
         if (i > -1) {
             this.playlists[playlistId].songs.splice(i, 1)
         }

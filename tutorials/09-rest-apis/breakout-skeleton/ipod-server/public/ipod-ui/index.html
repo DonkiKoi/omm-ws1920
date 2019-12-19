@@ -94,21 +94,21 @@
 
     <script>
         const showErrorFooter = error => {
-            console.log(error)
+            console.log(error);
             document.querySelector('#screencontent #errorfooter').setAttribute('style','display: block');
-        }
+        };
 
         const renderPlaylist = () => {
-            document.getElementById('playlisticon').setAttribute('style','display: none')
-            document.getElementById('searchicon').setAttribute('style','display: block')
+            document.getElementById('playlisticon').setAttribute('style','display: none');
+            document.getElementById('searchicon').setAttribute('style','display: block');
             fetch('http://localhost:3000/playlists/1').then(json => json.json().then(res => {
-                let playlistTitle = res.name
-                console.log('playlist name: '+playlistTitle)
+                let playlistTitle = res.name;
+                console.log('playlist name: '+playlistTitle);
                 document.querySelector('#screencontent h1').innerHTML = playlistTitle
-            })).catch(showErrorFooter)
+            })).catch(showErrorFooter);
 
             fetch('http://localhost:3000/playlists/1/songs').then(json => json.json().then(res => {
-                document.querySelector('#screencontent ul').innerHTML = ''
+                document.querySelector('#screencontent ul').innerHTML = '';
                 res.forEach(songId => {
                     fetch(`http://localhost:3000/playlists/1/songs/${songId}`).then(json => json.json().then(song => {
                         document.querySelector('#screencontent ul').innerHTML +=
@@ -120,7 +120,7 @@
                     })).catch(showErrorFooter)
                 })
             })).catch(showErrorFooter)
-        }
+        };
 
 
 
