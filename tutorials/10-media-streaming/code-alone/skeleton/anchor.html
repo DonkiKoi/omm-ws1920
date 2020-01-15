@@ -22,31 +22,42 @@ canvas { display: none; }
 if (!navigator.mediaDevices) {
     document.body.textContent = 'Cannot use media devices.'
 }
-const socket = io()
+const socket = io();
 
 // use MediaDevices API
 // docs: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia
-let video = document.getElementById('anchor')
+let video = document.getElementById('anchor');
 navigator.mediaDevices.getUserMedia({video: true})
 .then(stream => { video.srcObject = stream })
 .catch(error => {
     document.body.textContent = 'Could not access the camera. Error: ' + error.name
-})
+});
 
 // button events
-document.getElementById('start-stream').addEventListener('click', () => startStream())
-document.getElementById('stop-stream').addEventListener('click', () => stopStream())
+document.getElementById('start-stream').addEventListener('click', () => startStream());
+document.getElementById('stop-stream').addEventListener('click', () => stopStream());
 
 // render processing
-let canvas = document.getElementById('capture')
-let context = canvas.getContext('2d')
-let stream = null
+let canvas = document.getElementById('capture');
+let context = canvas.getContext('2d');
+let stream = null;
 const startStream = () => {
     // TODO: handling start streaming
-}
+    if(stream){return}
+    document.getElementById('message').innerText = "Streaming: ON";
+    stream = setInterval( () => {
+        console.log('draw');
+        context.drawImage(video, 0, 0, 640, 480);
+        socket.emit('streaming', canvas.toDataURL('image/webp'));
+    }, 40)
+};
 const stopStream = () => {
     // TODO: handling stop streaming
-}
+    if(!stream){return}
+    document.getElementById('message').innerText = "Streaming: OFF";
+    clearInterval(stream);
+    stream = null;
+};
 </script>
 </body>
 </html>

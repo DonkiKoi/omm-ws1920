@@ -13,6 +13,7 @@
 <body>
 
 <video autoplay></video>
+<audio src="shutter.m4a"></audio>
 
 <script>
     // when moving this to Polymer, keep in mind to adapt it as in example 04
@@ -34,6 +35,8 @@
       context.drawImage(video, 0, 0, width, height);
       img.src = canvas.toDataURL('image/png');
       document.body.appendChild(img);
+      // add sound effect
+      document.querySelector('audio').play();
     }
     // use MediaDevices API
     // docs: https://developer.mozilla.org/en-US/docs/Web/API/MediaDevices/getUserMedia

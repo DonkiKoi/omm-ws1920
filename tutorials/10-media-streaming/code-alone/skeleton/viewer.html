@@ -12,9 +12,13 @@
 </div>
 <script src="https://cdn.jsdelivr.net/npm/socket.io-client@2/dist/socket.io.js"></script>
 <script>
-const context = document.getElementById('viewer').getContext('2d')
-const socket = io()
+const context = document.getElementById('viewer').getContext('2d');
+const socket = io();
 // TODO: handling receive image
+let image = new Image();
+image.onload = () => {context.drawImage(image, 0, 0)};
+socket.on('viewing', data => {image.src = data})
+
 </script>
 </body>
 </html>
