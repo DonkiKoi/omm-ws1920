@@ -1,26 +1,33 @@
-var fs = require('fs');
-var app = require('express')();
-var https = require('https').createServer({
-  key: fs.readFileSync('server.key'),
-  cert: fs.readFileSync('server.cert')
+const fs = require('fs');
+const app = require('express')();
+const http = require('http');
+const WebSocket = require('ws');
+
+const port = 3000;
+const server = http.createServer({
+  //key: fs.readFileSync('server.key'),
+  //cert: fs.readFileSync('server.cert')
 }, app);
-var io = require('socket.io')(https);
-var port = 3000;
+
+const wss = new WebSocket.Server({server});
+wss.on('connection', function connection(ws) {
+    ws.on('message', function incoming(data) {
+        wss.clients.forEach(function each(client) {
+            if (client !== ws && client.readyState === WebSocket.OPEN) {
+                client.send(data);
+            }
+        });
+    });
+});
 
 app.get('/anchor', function(req, res){
   res.sendFile(__dirname + '/anchor.html');
 });
+
 app.get('/viewer', function(req, res){
   res.sendFile(__dirname + '/viewer.html');
 });
 
-
-io.on('connection', function(socket){
-  socket.on('streaming', function(image){
-    io.emit('viewing', image);
-  });
-});
-
-https.listen(port, function(){
-  console.log('server is listening on port:' + port);
+server.listen(port, function(){
+  console.log(`server is listening on localhost:${port}`);
 });
